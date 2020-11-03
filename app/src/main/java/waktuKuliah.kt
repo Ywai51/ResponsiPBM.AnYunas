@@ -1,0 +1,1 @@
+data class  waktuKuliah(val waktu : String, val matkul : String, val ruangan : String)

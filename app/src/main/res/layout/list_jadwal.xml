@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:id="@+id/list_item"
+    android:gravity="center_vertical">
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        app:cardBackgroundColor="@color/whiteYellow"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="6dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp">
+            <ImageView
+                android:id="@+id/imgList"
+                android:src="@drawable/jam"
+                android:layout_marginTop="3dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_waktu"
+                android:textStyle="bold"
+                android:textSize="15dp"
+                android:padding="10dp"
+                android:layout_marginLeft="5dp"/>
+
+            <ImageView
+                android:id="@+id/imgList2"
+                android:src="@drawable/tgl"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="3dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_matkul"
+                android:textStyle="bold"
+                android:textSize="15dp"
+                android:padding="10dp"
+                android:layout_marginLeft="5dp"/>
+            <ImageView
+                android:id="@+id/imgList3"
+                android:src="@drawable/ruang"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="3dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_ruangan"
+                android:textStyle="bold"
+                android:textSize="15dp"
+                android:padding="10dp"
+                android:layout_marginLeft="5dp"/>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
