@@ -11,38 +11,88 @@ import android.view.View
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.jadwalkuliah.roomDB.Constant
+import com.example.jadwalkuliah.roomDB.Note
+import com.example.jadwalkuliah.roomDB.NoteDB
+import kotlinx.android.synthetic.main.activity_edit.*
+import kotlinx.android.synthetic.main.activity_to_do.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ToDoActivity : AppCompatActivity() {
+
+    val db by lazy { NoteDB(this) }
+    lateinit var noteAdapter: NoteAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_to_do)
-
-        val sharedPref = this@ToDoActivity.getPreferences(Context.MODE_PRIVATE)
-        val isMyValueChecked = sharedPref.getBoolean("checkbox", false)
-
-        var cekbox = arrayOfNulls<CheckBox>(5)
-        for (j in 0..4)
-        {
-            val cb = "checkbox" + (j + 1)
-            val resIDmt = getResources().getIdentifier(cb, "id", getPackageName())
-            cekbox[j] = findViewById(resIDmt) as CheckBox
-            cekbox[j]?.setChecked(isMyValueChecked)
-            cekbox[j]?.setOnClickListener(object : View.OnClickListener {
-                override fun onClick(view: View) {
-                    val editor = sharedPref.edit()
-                    editor.putBoolean(cekbox[j].toString(), (view as CheckBox).isChecked())
-                    editor.commit()
-                    if (cekbox[j]!!.isChecked()) {
-                        startService(Intent(this@ToDoActivity, ToDoActivity::class.java))
-                    } else {
-                        stopService(Intent(this@ToDoActivity, ToDoActivity::class.java))
-                    }
-                }
-            })
-        }
-        
+        setupListener()
+        setupRecycleView()
 
     }
+
+    override fun onStart() {
+        super.onStart()
+        loadNote()
+    }
+
+    fun loadNote(){
+        CoroutineScope(Dispatchers.IO).launch {
+            val notes = db.noteDao().getNotes()
+            withContext(Dispatchers.Main){
+                noteAdapter.setData(notes)
+            }
+        }
+    }
+
+    fun setupListener(){
+        button_create.setOnClickListener {
+            intentEdit(0,Constant.TYPE_CREATE)
+        }
+    }
+
+    fun intentEdit(noteId: Int, intentType: Int){
+        startActivity(
+            Intent(applicationContext, EditActivity::class.java)
+                .putExtra("intent_id", noteId)
+                .putExtra("intent_type", intentType)
+
+
+        )
+    }
+
+    fun setupRecycleView(){
+        noteAdapter = NoteAdapter(arrayListOf(), object : NoteAdapter.OnAdapterListener{
+
+            //ON READ
+            override fun onClick(note: Note) {
+               // Toast.makeText(applicationContext, note.title, Toast.LENGTH_SHORT).show()
+                intentEdit(note.Id,Constant.TYPE_READ)
+            }
+            //Update
+            override fun onUpdate(note: Note) {
+                intentEdit(note.Id,Constant.TYPE_UPDATE)
+
+            }
+            //Delete
+            override fun onDelete(note: Note) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    db.noteDao().deleteNote(note)
+                    loadNote()
+                }
+
+            }
+        })
+        list_note.apply {
+            layoutManager = LinearLayoutManager(applicationContext)
+            adapter = noteAdapter
+        }
+    }
+
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
